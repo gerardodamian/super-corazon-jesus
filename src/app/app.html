@@ -1,0 +1,428 @@
+<div class="container my-5 py-3">
+  <!-- Header mejorado -->
+  <header class="main-header">
+    <div class="header-container">
+      <!-- Logo y nombre del negocio -->
+      <div class="logo-section">
+        <div class="logo-icon">
+          <img
+            src="assets/images/logo.png"
+            alt="Logo Super Corazon de Jesus"
+            style="width: 60px; height: 60px; object-fit: contain;"
+            (error)="handleImageError($event)"
+          />
+        </div>
+        <div class="business-info">
+          <h1 class="business-name">Autoservicio</h1>
+          <h2 class="business-subtitle">Sagrado Corazón De Jesús</h2>
+        </div>
+      </div>
+
+      <!-- Buscador central -->
+      <!-- Buscador central mejorado -->
+<div class="search-section">
+  <div class="search-container">
+    <span class="search-icon">🔍</span>
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar productos, marcas, categorías..."
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onSearchEnter()"
+      (input)="onSearchInput()"
+    />
+    <button
+      class="clear-search-btn"
+      *ngIf="searchTerm.trim()"
+      (click)="clearSearch()"
+      (mousedown)="$event.preventDefault()"
+      title="Limpiar búsqueda"
+      aria-label="Limpiar búsqueda"
+    >
+      ✕
+    </button>
+  </div>
+</div>
+
+<!-- Resultados de búsqueda mejorados -->
+<div *ngIf="searchTerm.trim()">
+  <div class="search-results-header">
+    <h4 class="search-results-title">
+      <span class="search-icon-result">🔍</span>
+      {{ searchResultsMessage }}
+    </h4>
+    <button
+      class="btn-clear-search"
+      (click)="clearSearch()"
+      title="Limpiar búsqueda"
+      aria-label="Limpiar búsqueda"
+    >
+      ✕ Limpiar búsqueda
+    </button>
+  </div>
+
+  <!-- Sin resultados mejorado -->
+  <div class="no-results" *ngIf="!hasSearchResults">
+    <div class="no-results-icon">😔</div>
+    <h5>No se encontraron productos</h5>
+    <p>Intenta buscar con otros términos como:</p>
+    <div class="search-suggestions">
+      <button class="suggestion-btn" (click)="applySuggestion('leche')">🥛 leche</button>
+      <button class="suggestion-btn" (click)="applySuggestion('pan')">🍞 pan</button>
+      <button class="suggestion-btn" (click)="applySuggestion('cafe')">☕ café</button>
+      <button class="suggestion-btn" (click)="applySuggestion('fideos')">🍝 fideos</button>
+      <button class="suggestion-btn" (click)="applySuggestion('aceite')">🫒 aceite</button>
+      <button class="suggestion-btn" (click)="applySuggestion('queso')">🧀 queso</button>
+    </div>
+  </div>
+</div>
+      <!-- Carrito -->
+      <div class="cart-section">
+        <button class="cart-button-header" (click)="openCart()">
+          <div class="cart-icon-container">
+            <span class="cart-icon">🛒</span>
+            <span class="cart-count" *ngIf="cartItemCount > 0">{{
+              cartItemCount
+            }}</span>
+          </div>
+          <div class="cart-info">
+            <span class="cart-label">Carrito</span>
+            <span class="cart-total" *ngIf="cartTotal > 0">ARS ${{ cartTotal }}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ofertas -->
+  <div *ngIf="!searchTerm.trim()">
+    <h4 class="text-success">🔥 Ofertas del día</h4>
+    <div class="products-grid">
+      <div class="product-card offer-card" *ngFor="let product of offerProducts">
+        <div class="card-image-container">
+          <img
+            [src]="
+              product.image ||
+              'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500'
+            "
+            class="card-image"
+            [alt]="product.name"
+            (error)="handleImageError($event)"
+          />
+          <div class="offer-badge">
+            <span>🔥 OFERTA</span>
+          </div>
+          <div class="card-overlay">
+            <button class="btn-quick-view" (click)="showProductDetails(product)">
+              👁️ Ver más
+            </button>
+          </div>
+        </div>
+        <div class="card-content">
+          <h5 class="product-title">{{ product.name }}</h5>
+          <p class="product-category">{{ product.category }}</p>
+          <div class="price-container">
+            <span class="current-price">ARS ${{ product.price }}</span>
+            <span class="original-price">ARS ${{ product.price + 200 }}</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-add-cart" (click)="addToCart(product)">
+              🛒 Agregar
+            </button>
+            <button class="btn-whatsapp" (click)="sendWhatsAppMessage(product)">
+              <i class="bi bi-whatsapp"></i> Consultar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resultados de búsqueda -->
+  <div *ngIf="searchTerm.trim()">
+    <div class="search-results-header">
+      <h4 class="search-results-title">
+        <span class="search-icon-result">🔍</span>
+        {{ searchResultsMessage }}
+      </h4>
+      <button class="btn-clear-search" (click)="clearSearch()">
+        ✕ Limpiar búsqueda
+      </button>
+    </div>
+
+    <!-- Sin resultados -->
+    <div class="no-results" *ngIf="!hasSearchResults">
+      <div class="no-results-icon">😔</div>
+      <h5>No se encontraron productos</h5>
+      <p>Intenta buscar con otros términos como:</p>
+      <div class="search-suggestions">
+        <button class="suggestion-btn" (click)="searchTerm = 'leche'; ">leche</button>
+        <button class="suggestion-btn" (click)="searchTerm = 'pan';">pan</button>
+        <button class="suggestion-btn" (click)="searchTerm = 'cafe';">café</button>
+        <button class="suggestion-btn" (click)="searchTerm = 'fideos';">fideos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Todos los productos / Resultados filtrados -->
+  <h4 class="mt-5 text-primary" *ngIf="!searchTerm.trim()">📦 Productos</h4>
+  <div class="products-grid" *ngIf="hasSearchResults || !searchTerm.trim()">
+    <div class="product-card" *ngFor="let product of filteredProducts">
+      <div class="card-image-container">
+        <img
+          [src]="
+            product.image ||
+            'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500'
+          "
+          class="card-image"
+          [alt]="product.name"
+          (error)="handleImageError($event)"
+        />
+        <div class="card-overlay">
+          <button class="btn-quick-view" (click)="showProductDetails(product)">
+            👁️ Ver más
+          </button>
+        </div>
+      </div>
+      <div class="card-content">
+        <h5 class="product-title">{{ product.name }}</h5>
+        <p class="product-category">{{ product.category }}</p>
+        <div class="price-container">
+          <span class="current-price">ARS ${{ product.price }}</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-add-cart" (click)="addToCart(product)">
+            🛒 Agregar
+          </button>
+          <button class="btn-whatsapp" (click)="sendWhatsAppMessage(product)">
+            <i class="bi bi-whatsapp"></i> Consultar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ubicación -->
+  <h4 class="mt-5 text-primary">📍 ¿Dónde estamos?</h4>
+  <div class="location-section">
+    <div class="location-content">
+      <div class="store-info">
+        <div class="store-image-container">
+          <img
+            src="assets/images/foto-frente.png"
+            alt="Autoservicio Sagrado Corazón De Jesús"
+            class="store-image"
+            (error)="handleImageError($event)"
+          />
+          <div class="store-overlay">
+            <div class="store-details">
+              <h5>🏪 Nuestro Local</h5>
+              <p>📍 Ubicado en el corazón de Las Talas</p>
+              <p>🕒 Horarios de atención</p>
+              <p>📞 Contacto directo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-container">
+        <div class="map-wrapper">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d219.26977269138928!2d-67.12093574256392!3d-28.439878198990222!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x942743925ffa3201%3A0x6d3bea966a23190d!2sAutoservicio%20Sagrado%20Corazon%20De%20Jesus!5e0!3m2!1ses!2sar!4v1749313488398!5m2!1ses!2sar"
+            width="100%"
+            height="100%"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          >
+          </iframe>
+        </div>
+        <div class="map-info">
+          <div class="address-card">
+            <h6>📍 Dirección</h6>
+            <p>Autoservicio Sagrado Corazón De Jesús</p>
+            <p>San Blas de los Sauces - Provincia de La Rioja, Argentina</p>
+            <button
+              class="btn-directions"
+              onclick="window.open('https://maps.google.com/maps?q=Autoservicio+Sagrado+Corazon+De+Jesus', '_blank')"
+            >
+              🗺️ Cómo llegar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de detalles del producto -->
+  <div
+    class="modal-overlay modal-top"
+    *ngIf="showProductModal"
+    (click)="closeProductModal()"
+  >
+    <div class="modal-content product-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ selectedProduct?.name }}</h3>
+        <button class="close-btn" (click)="closeProductModal()">✕</button>
+      </div>
+
+      <div class="modal-body" *ngIf="selectedProduct">
+        <div class="product-detail-grid">
+          <div class="product-image-section">
+            <img
+              [src]="selectedProduct.image"
+              [alt]="selectedProduct.name"
+              class="detail-image"
+            />
+            <div class="product-badges">
+              <span class="badge-category">{{ selectedProduct.category }}</span>
+              <span class="badge-offer" *ngIf="selectedProduct.offer"
+                >🔥 OFERTA</span
+              >
+            </div>
+          </div>
+
+          <div class="product-info-section">
+            <div class="price-section">
+              <span class="current-price"
+                >ARS ${{ selectedProduct.price }}</span
+              >
+              <span class="original-price" *ngIf="selectedProduct.offer"
+                >ARS ${{ selectedProduct.price + 200 }}</span
+              >
+            </div>
+
+            <div class="product-details">
+              <h4>📋 Detalles del producto</h4>
+              <p><strong>Marca:</strong> {{ selectedProduct.brand }}</p>
+              <p><strong>Peso/Volumen:</strong> {{ selectedProduct.weight }}</p>
+              <p class="description">{{ selectedProduct.description }}</p>
+
+              <div
+                class="ingredients"
+                *ngIf="
+                  selectedProduct.ingredients &&
+                  selectedProduct.ingredients.length > 0
+                "
+              >
+                <h5>🧾 Ingredientes:</h5>
+                <ul>
+                  <li *ngFor="let ingredient of selectedProduct.ingredients">
+                    {{ ingredient }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button
+                class="btn-add-cart-modal"
+                (click)="addToCart(selectedProduct)"
+              >
+                🛒 Agregar al carrito
+              </button>
+              <button
+                class="btn-whatsapp-modal"
+                (click)="sendWhatsAppMessage(selectedProduct)"
+              >
+                <i class="bi bi-whatsapp"></i> Consultar por WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal del carrito -->
+  <div class="modal-overlay modal-top" *ngIf="showCartModal" (click)="closeCart()">
+    <div class="modal-content cart-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>🛒 Mi Carrito ({{ cartItemCount }} items)</h3>
+        <button class="close-btn" (click)="closeCart()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="cart-empty" *ngIf="cart.length === 0">
+          <div class="empty-cart-icon">🛒</div>
+          <h4>Tu carrito está vacío</h4>
+          <p>¡Agrega algunos productos para comenzar!</p>
+        </div>
+
+        <div class="cart-items" *ngIf="cart.length > 0">
+          <div class="cart-item" *ngFor="let item of cart">
+            <img
+              [src]="item.product.image"
+              [alt]="item.product.name"
+              class="cart-item-image"
+            />
+
+            <div class="cart-item-info">
+              <h5>{{ item.product.name }}</h5>
+              <p class="cart-item-category">{{ item.product.category }}</p>
+              <p class="cart-item-price">ARS ${{ item.product.price }}</p>
+            </div>
+
+            <div class="cart-item-controls">
+              <div class="quantity-controls">
+                <button
+                  class="qty-btn"
+                  (click)="updateQuantity(item.product.id, item.quantity - 1)"
+                >
+                  -
+                </button>
+                <span class="quantity">{{ item.quantity }}</span>
+                <button
+                  class="qty-btn"
+                  (click)="updateQuantity(item.product.id, item.quantity + 1)"
+                >
+                  +
+                </button>
+              </div>
+              <p class="item-total">
+                ARS ${{ item.product.price * item.quantity }}
+              </p>
+              <button
+                class="remove-btn"
+                (click)="removeFromCart(item.product.id)"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cart-summary" *ngIf="cart.length > 0">
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span class="summary-price">ARS ${{ cartTotal }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span class="summary-price">ARS ${{ cartTotal }}</span>
+          </div>
+
+          <div class="cart-actions">
+            <button class="btn-clear-cart" (click)="clearCart()">
+              🗑️ Vaciar carrito
+            </button>
+            <button class="btn-checkout" (click)="sendWhatsAppMessage()">
+              <i class="bi bi-whatsapp"></i> Pedir por WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón de WhatsApp flotante -->
+  <button
+    class="btn-whatsapp-float"
+    (click)="sendWhatsAppMessage()"
+    title="Contactar por WhatsApp"
+  >
+    <i class="bi bi-whatsapp"></i>
+  </button>
+  <router-outlet></router-outlet>
+</div>
