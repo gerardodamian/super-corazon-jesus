@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Location } from '@angular/common';
 
 // Definir las interfaces necesarias
 interface Product {
@@ -247,6 +248,10 @@ export class App implements OnInit {
       ingredients: ['Leche', 'Sal', 'Cuajo', 'Fermentos lácticos'],
     },
   ];
+
+  constructor(private location: Location) {
+    console.log('Base HREF:', this.location.prepareExternalUrl(''));
+  }
 
   // Métodos para filtrar productos
   get filteredProducts() {

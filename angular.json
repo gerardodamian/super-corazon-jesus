@@ -19,16 +19,10 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "/assets/"
-              },
-              {
-                "glob": "favicon.ico",
-                "input": "src",
-                "output": "/"
-              }
+              "src/assets",
+              "src/favicon.ico",
+              "src/404.html",
+              "src/.nojekyll"
             ],
             "styles": [
               "src/styles.css"

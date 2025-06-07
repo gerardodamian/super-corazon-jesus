@@ -12,5 +12,15 @@
 </head>
 <body>
   <app-root></app-root>
+  <script>
+  // Redirecciones para GitHub Pages
+  (function() {
+    var redirect = sessionStorage.redirect;
+    delete sessionStorage.redirect;
+    if (redirect && redirect !== location.href) {
+      history.replaceState(null, null, redirect.replace('/super-corazon-jesus/', '/super-corazon-jesus/'));
+    }
+  })();
+  </script>
 </body>
 </html>
